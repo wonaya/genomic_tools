@@ -48,7 +48,7 @@ for x in range(1,int(noofbam)) :
     x += 1
 list_of_bams.append(raw_input("Type in name of the control bam file (eg. 5_S5_L001_sorted.bam) : "))
 
-outname = raw_input("Name of MultiBamCov output file : ")
+#outname = raw_input("Name of MultiBamCov output file : ")
 location_of_mbc = raw_input("Full path of multiBamCov (eg. /usr/bin/bedtools/bin/multiBamCov) : ")
 location_of_samtools = raw_input("Full path of Samtools (eg. /usr/bin/samtools) : ")
 
@@ -73,9 +73,9 @@ for a in range(1, max_chr) :
         outfile.write(str(a)+"\t.\tWindow\t"+str(b*1000+1)+"\t"+str((b+1)*1000)+"\t.\t.\t.\tID="+str(a)+str(ID+str(b*1000+1))+"\n")
 outfile.close()
 
-scr = str(location_of_mbc)+" -bams "+str(" ".join(list_of_bams))+" -bed "+str(specie)+"_"+str(window)+"bp.gff > "+str(outname)
+scr = str(location_of_mbc)+" -bams "+str(" ".join(list_of_bams))+" -bed "+str(specie)+"_"+str(window)+"bp.gff > tmp.out"
 print "###running "+str(scr)+" ..., (takes a while)"
-#os.system(scr)
+os.system(scr)
 
 list_of_reads_mapped = []
 print "###running samtools to get number of reads mapped ..."
@@ -97,7 +97,7 @@ for bams in list_of_bams[:-1] :
     front = bams.split(".")[0]
     back = str(list_of_bams[-1]).split(".")[0]
     outfile = open(str(front)+"_"+str(back)+".bedGraph", 'w')
-    for a in open(outname, 'r') :
+    for a in open("tmp.out", 'r') :
         ip = float(a.split("\t")[9+int(list_of_bams.index(bams))])
         control = float(a.split("\t")[9+int(len(list_of_bams[:-1]))].strip("\n"))
         k = factor[int(list_of_bams.index(bams))+1]
@@ -107,4 +107,5 @@ for bams in list_of_bams[:-1] :
             outfile.write(str(a.split("\t")[4])+"\t")
             outfile.write(str(math.log(((ip*k)/(control+1)),2))+"\n")    
     outfile.close()
+os.system("rm -Rf tmp.out")
 print "###All calculations complete!"
