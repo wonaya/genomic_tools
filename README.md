@@ -2,6 +2,6 @@
 various python scripts
 
 1. fai to bed
-- usage: fai_to_bed.py [fai]
+```python fai_to_bed.py [fai]```
 2. chipcompare-0.1.py
-- usage: python chipcompare-0.1.py --test_1 ${INPUT1_F} --test_2 ${INPUT2_F} --Ncoord ${MAPPABLE_F} --fai ${FAI_F} ${ARGS} --output ${outputPrefix}
+```python chipcompare-0.1.py --test_1 input1.broadPeak --test_2 input2.broadPeak --Ncoord nonmappable.bed --fai genome.fai --output output_prefix```
