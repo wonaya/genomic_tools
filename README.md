@@ -7,3 +7,6 @@ various python scripts
 ```python chipcompare-0.1.py --test_1 input1.broadPeak --test_2 input2.broadPeak --Ncoord nonmappable.bed --fai genome.fai --output output_prefix```
 3. chiprnacompare-0.1.py<br />
 ```python chiprnacompare-0.1py --chip chip.broadPeak --rnaseq genes.fpkm_tracking --gff3 maize.gff3 --macs_score 50```
+4. coverage_calculate.py<br />
+```python coverage_calculate.py [bam] [fai] [-P] [read length]```
+
