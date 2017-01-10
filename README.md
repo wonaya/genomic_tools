@@ -9,4 +9,5 @@ various python scripts
 ```python chiprnacompare-0.1py --chip chip.broadPeak --rnaseq genes.fpkm_tracking --gff3 maize.gff3 --macs_score 50```
 4. coverage_calculate.py<br />
 ```python coverage_calculate.py [bam] [fai] [-P] [read length]```
-
+5. bedgz_to_summary_bisulfite.py<br />
+```python bedgz_to_summary_bisulfite.py <geno name eg. B73 looks for file named B73_methratio.txt from $CWD>```
