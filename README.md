@@ -11,3 +11,5 @@ various python scripts
 ```python coverage_calculate.py [bam] [fai] [-P] [read length]```
 5. bedgz_to_summary_bisulfite.py<br />
 ```python bedgz_to_summary_bisulfite.py <geno name eg. B73 looks for file named B73_methratio.txt from $CWD>```
+6. count_cg_sites.py<br />
+```python count_cg_sites.py [fasta]``` gives bed file with count of CG, CHG, CHH sites of 100bp windows
