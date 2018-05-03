@@ -42,8 +42,6 @@ for files in file :
 
 for files in reffile :
     name=files.split(".bam")[0]
-    #os.system("/opt/apps/samtools/1.3.1/bin/samtools index "+files)
-    #os.system("/home1/02114/wonaya/.local/bin/bamCoverage --bam "+files+" --binSize 1000 --normalizeTo1x 2300000000 -of bedgraph --numberOfProcessors 16 -o "+name+"_1xnorm.bedgraph")
     print files
     os.system("export LC_ALL=C; bedtools bamtobed -i %s | cut -f 1-3 | sort -S 1G -k1,1 -k2,2n > %s"%(files, name+".bed"))
     os.system("bedtools intersect -a %s -b %s -c -sorted > %s"%("maize_4.33_w1000.bed", name+".bed", name+".bedgraph"))
@@ -72,30 +70,29 @@ for files in reffile :
             else:
                 outfile.write('%s\t%i\t%i\t%.3f\n'%(chrom, s, e, oV))
     outfile.close()
-   
-print "### intersectBed DONE###"
-os.system("rm -Rf tmp*bed")
 
 filR = open("maize_4.33_w1000.bed", 'r')
 linR = filR.readlines()
-fil1 = open(file[0].split(".bam")[0]+"_1xnorm.bedgraph", 'r')
-lin1 = fil1.readlines()
-fil2 = open(file[1].split(".bam")[0]+"_1xnorm.bedgraph", 'r')
-lin2 = fil2.readlines()
-fil3 = open(file[2].split(".bam")[0]+"_1xnorm.bedgraph", 'r')
-lin3 = fil3.readlines()
-filR1 = open(reffile[0].split(".bam")[0]+"_1xnorm.bedgraph", 'r')
-ref1 = filR1.readlines()
-filR2 = open(reffile[1].split(".bam")[0]+"_1xnorm.bedgraph", 'r')
-ref2 = filR2.readlines()
-filR3 = open(reffile[2].split(".bam")[0]+"_1xnorm.bedgraph", 'r')
-ref3 = filR3.readlines()
+collect = []
+for fil in file :
+    file_content = open(fil.split(".bam")[0]+"_1xnorm.bedgraph", 'r')
+    lines = file_content.readlines()
+    collect.append(lines)
+print len(collect)
+ref_collect = []
+for fil in reffile :
+    file_content = open(fil.split(".bam")[0]+"_1xnorm.bedgraph", 'r')
+    lines = file_content.readlines()
+    ref_collect.append(lines)
 
 outfile = open(str(sys.argv[3])+"_merged.bedgraph", 'w')
 index = 0
 for lineR in linR : 
-    sum = float(lin1[index].split("\t")[-1].strip("\n"))+float(lin2[index].split("\t")[-1].strip("\n"))+float(lin3[index].split("\t")[-1].strip("\n"))
-    mean = float(sum)/float(len(file))
+    sum = 0
+    for file in collect :
+        sum += float(file[index].split("\t")[-1].strip("\n"))
+    #sum = float(lin1[index].split("\t")[-1].strip("\n"))+float(lin2[index].split("\t")[-1].strip("\n"))+float(lin3[index].split("\t")[-1].strip("\n"))
+    mean = float(sum)/float(len(collect))
     outfile.write("\t".join(lineR.split("\t")[:3]).strip("\n")+"\t")
     outfile.write(str(mean)+"\n")
     index += 1
@@ -104,7 +101,10 @@ outfile.close()
 outfile = open(str(sys.argv[3])+"_mergeref.bedgraph", 'w')
 index = 0
 for lineR in linR :
-    sum = float(ref1[index].split("\t")[-1].strip("\n"))+float(ref2[index].split("\t")[-1].strip("\n"))+float(ref3[index].split("\t")[-1].strip("\n"))
+    sum = 0
+    for file in ref_collect :
+        sum += float(file[index].split("\t")[-1].strip("\n"))
+    #sum = float(ref1[index].split("\t")[-1].strip("\n"))+float(ref2[index].split("\t")[-1].strip("\n"))+float(ref3[index].split("\t")[-1].strip("\n"))
     mean = float(sum)/float(len(reffile))
     outfile.write("\t".join(lineR.split("\t")[:3]).strip("\n")+"\t")
     outfile.write(str(mean)+"\n")
@@ -127,4 +127,3 @@ for a in mergel :
         outfile.write("0\n")
 outfile.close()
 os.system("rm -Rf "+str(sys.argv[3])+"_merged.bed "+str(sys.argv[3])+"_mergeref.bed")
-
