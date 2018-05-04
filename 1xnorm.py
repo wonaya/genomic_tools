@@ -23,14 +23,17 @@ for files in file :
     # Read Data
     for line in noComments:
         tmp = line.rstrip('\n').split('\t')
-	s, e, v = int(tmp[1]), int(tmp[2]), float(tmp[3])
+        s, e, v = int(tmp[1]), int(tmp[2]), float(tmp[3])
 	genome[tmp[0]].append((s,e,v))
+    ## Calculate scaling factor
+    total_reads = 0
+    for a in open(name+".bedgraph", 'r') :
+        total_reads += float(a.split("\t")[-1].strip("\n"))
+    scale = 1/(total_reads*130/2.3e9)
+    print scale
     # Process each chrom
     sChroms = sorted(genome.keys())
     for chrom in sChroms:
-	total = sum(map(itemgetter(2), genome[chrom]))
-	nBases = sum(map(lambda x: x[1]-x[0], genome[chrom]))
-	scale = nBases/float(total)
 	for record in genome[chrom]:
 	    s, e, v = record
 	    oV = v*scale
@@ -39,12 +42,11 @@ for files in file :
 	    else:
 		outfile.write('%s\t%i\t%i\t%.3f\n'%(chrom, s, e, oV))
     outfile.close()
-
 for files in reffile :
     name=files.split(".bam")[0]
     print files
-    os.system("export LC_ALL=C; bedtools bamtobed -i %s | cut -f 1-3 | sort -S 1G -k1,1 -k2,2n > %s"%(files, name+".bed"))
-    os.system("bedtools intersect -a %s -b %s -c -sorted > %s"%("maize_4.33_w1000.bed", name+".bed", name+".bedgraph"))
+    #os.system("export LC_ALL=C; bedtools bamtobed -i %s | cut -f 1-3 | sort -S 1G -k1,1 -k2,2n > %s"%(files, name+".bed"))
+    #os.system("bedtools intersect -a %s -b %s -c -sorted > %s"%("maize_4.33_w1000.bed", name+".bed", name+".bedgraph"))
     outfile = open(name+"_1xnorm.bedgraph", 'w')
     from collections import defaultdict
     from operator import itemgetter
@@ -56,12 +58,15 @@ for files in reffile :
         tmp = line.rstrip('\n').split('\t')
         s, e, v = int(tmp[1]), int(tmp[2]), float(tmp[3])
         genome[tmp[0]].append((s,e,v))
+    ## Calculate scaling factor
+    total_reads = 0
+    for a in open(name+".bedgraph", 'r') :
+        total_reads += float(a.split("\t")[-1].strip("\n"))
+    scale = 1/(total_reads*130/2.3e9)
+    print scale
     # Process each chrom
     sChroms = sorted(genome.keys())
     for chrom in sChroms:
-        total = sum(map(itemgetter(2), genome[chrom]))
-        nBases = sum(map(lambda x: x[1]-x[0], genome[chrom]))
-        scale = nBases/float(total)
         for record in genome[chrom]:
             s, e, v = record
             oV = v*scale
@@ -78,7 +83,6 @@ for fil in file :
     file_content = open(fil.split(".bam")[0]+"_1xnorm.bedgraph", 'r')
     lines = file_content.readlines()
     collect.append(lines)
-print len(collect)
 ref_collect = []
 for fil in reffile :
     file_content = open(fil.split(".bam")[0]+"_1xnorm.bedgraph", 'r')
@@ -91,7 +95,6 @@ for lineR in linR :
     sum = 0
     for file in collect :
         sum += float(file[index].split("\t")[-1].strip("\n"))
-    #sum = float(lin1[index].split("\t")[-1].strip("\n"))+float(lin2[index].split("\t")[-1].strip("\n"))+float(lin3[index].split("\t")[-1].strip("\n"))
     mean = float(sum)/float(len(collect))
     outfile.write("\t".join(lineR.split("\t")[:3]).strip("\n")+"\t")
     outfile.write(str(mean)+"\n")
@@ -104,7 +107,6 @@ for lineR in linR :
     sum = 0
     for file in ref_collect :
         sum += float(file[index].split("\t")[-1].strip("\n"))
-    #sum = float(ref1[index].split("\t")[-1].strip("\n"))+float(ref2[index].split("\t")[-1].strip("\n"))+float(ref3[index].split("\t")[-1].strip("\n"))
     mean = float(sum)/float(len(reffile))
     outfile.write("\t".join(lineR.split("\t")[:3]).strip("\n")+"\t")
     outfile.write(str(mean)+"\n")
@@ -112,7 +114,7 @@ for lineR in linR :
 outfile.close()
 
 ### divide it
-outfile = open("ratio_"+str(sys.argv[3])+".bedgraph", 'w')
+outfile = open("ratio_1x_"+str(sys.argv[3])+".bedgraph", 'w')
 
 mergef = open(str(sys.argv[3])+"_merged.bedgraph",'r')
 merger = open(str(sys.argv[3])+"_mergeref.bedgraph", 'r')
@@ -126,4 +128,4 @@ for a in mergel :
     else : 
         outfile.write("0\n")
 outfile.close()
-os.system("rm -Rf "+str(sys.argv[3])+"_merged.bed "+str(sys.argv[3])+"_mergeref.bed")
+os.system("rm -Rf "+str(sys.argv[3])+"_merged.bedgraph "+str(sys.argv[3])+"_mergeref.bedgraph")
