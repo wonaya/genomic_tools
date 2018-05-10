@@ -127,5 +127,6 @@ for a in mergel :
         outfile.write(str(float(a.split("\t")[-1].strip("\n"))/float(mergerl[index].split("\t")[-1].strip("\n")))+"\n")
     else : 
         outfile.write("0\n")
+    index += 1
 outfile.close()
 os.system("rm -Rf "+str(sys.argv[3])+"_merged.bedgraph "+str(sys.argv[3])+"_mergeref.bedgraph")
