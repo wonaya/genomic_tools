@@ -1,6 +1,9 @@
-import os,sys
-#python 1xnorm.py file.txt reffile.txt prefix
+#Usage python 1xnorm.py file.txt reffile.txt prefix
+#file.txt contains list of test .bam files e.g. ES1.bam\nES2.bam\nES3.bam
+#reffile.txt contains list of reference .bam files e.g. control1.bam\ncontrol2.bam
 
+#import individual file names
+import os,sys
 file = []
 reffile = []
 for a in open(sys.argv[1], 'r'):
@@ -8,11 +11,14 @@ for a in open(sys.argv[1], 'r'):
 for a in open(sys.argv[2], 'r') :
     reffile.append(a.strip("\n"))
 
+### extract name of each sample from file.txt file names
 readlen = []
 for files in file :
     name=files.split(".bam")[0]
-    print files
+    #print files
+    # run bed tools to convert bam file to bed file and extract columns and sort
     os.system("export LC_ALL=C; bedtools bamtobed -i %s | cut -f 1-3 | sort -S 1G -k1,1 -k2,2n > %s"%(files, name+".bed"))
+    # overlap with maize genome interval to output to file chr1\n1\1000\nES etc. 
     os.system("bedtools intersect -a %s -b %s -c -sorted > %s"%("maize_4.33_w1000.bed", name+".bed", name+".bedgraph"))
     outfile = open(name+"_1xnorm.bedgraph", 'w')
     from collections import defaultdict 
@@ -25,11 +31,11 @@ for files in file :
         tmp = line.rstrip('\n').split('\t')
         s, e, v = int(tmp[1]), int(tmp[2]), float(tmp[3])
 	genome[tmp[0]].append((s,e,v))
-    ## Calculate scaling factor
+    ## Calculate scaling factor to normalize
     total_reads = 0
     for a in open(name+".bedgraph", 'r') :
         total_reads += float(a.split("\t")[-1].strip("\n"))
-    scale = 1/(total_reads*130/2.3e9)
+    scale = 1/(total_reads*130/2.3e9) ### given read length=130, genome size 2.3e9
     print scale
     # Process each chrom
     sChroms = sorted(genome.keys())
