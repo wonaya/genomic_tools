@@ -22,7 +22,7 @@ for a in open(sys.argv[3], 'r') :
         window.write(str((x+1)*float(sys.argv[4]))+"\n")
     window.write(a.split("\t")[0]+"\t"+str((x+1)*float(sys.argv[4]))+"\t"+a.split("\t")[1]+"\n")
 window.close()
-
+sys.exit()
 ### extract name of each sample from file.txt file names
 readlen = []
 for files in file :
