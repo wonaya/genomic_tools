@@ -42,7 +42,7 @@ for files in file :
     for a in open(name+".bedgraph", 'r') :
         total_reads += float(a.split("\t")[-1].strip("\n"))
     scale = 1/(total_reads*readlength/2.3e9)
-    print "##### SCALE FACTOR:"+scale+"#####"
+    print "##### SCALE FACTOR:"+str(scale)+"#####"
     # Process each chrom to 1X
     sChroms = sorted(genome.keys())
     for chrom in sChroms:
@@ -83,7 +83,7 @@ for files in reffile :
         total_reads += float(a.split("\t")[-1].strip("\n"))
     #print total_reads
     scale = 1/(total_reads*readlength/2.3e9)
-    print "##### SCALE FACTOR:"+scale+"#####"
+    print "##### SCALE FACTOR:"+str(scale)+"#####"
     # Process each chrom
     sChroms = sorted(genome.keys())
     for chrom in sChroms:
@@ -154,7 +154,7 @@ total_reads = 0
 for a in open(str(prefix)+"_merge.bedgraph", 'r') :
     total_reads += float(a.split("\t")[-1].strip("\n"))
 scale = 1/(total_reads*readlength/2.3e9)
-print "##### SCALE FACTOR:"+scale+"#####"
+print "##### SCALE FACTOR:"+str(scale)+"#####"
 # Process each chrom
 sChroms = sorted(genome.keys())
 for chrom in sChroms:
@@ -186,7 +186,7 @@ for a in open(str(prefix)+"_mergeref.bedgraph", 'r') :
     total_reads += float(a.split("\t")[-1].strip("\n"))
 #print total_reads
 scale = 1/(total_reads*readlength/2.3e9)
-print "##### SCALE FACTOR:"+scale+"#####"
+print "##### SCALE FACTOR:"+str(scale)+"#####"
 # Process each chrom
 sChroms = sorted(genome.keys())
 for chrom in sChroms:
