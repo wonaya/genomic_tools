@@ -107,7 +107,7 @@ for fil in reffile :
     lines = file_content.readlines()
     ref_collect.append(lines)
 
-outfile = open(str(prefix+"_merged.bedgraph", 'w')
+outfile = open(str(prefix)+"_merged.bedgraph", 'w')
 index = 0
 for lineR in linR : 
     sum = 0
