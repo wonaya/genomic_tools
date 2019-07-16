@@ -148,7 +148,7 @@ genome = defaultdict(list)
 # Read Data
 for line in noComments:
     tmp = line.rstrip('\n').split('\t')
-    s, e, v = int(tmp[1]), int(tmp[2]), float(tmp[3])
+    s, e, v = float(tmp[1]), float(tmp[2]), float(tmp[3])
     genome[tmp[0]].append((s,e,v))
 total_reads = 0
 for a in open(str(prefix)+"_merge.bedgraph", 'r') :
@@ -178,7 +178,7 @@ genome = defaultdict(list)
 # Read Data
 for line in noComments:
     tmp = line.rstrip('\n').split('\t')
-    s, e, v = int(tmp[1]), int(tmp[2]), float(tmp[3])
+    s, e, v = float(tmp[1]), float(tmp[2]), float(tmp[3])
     genome[tmp[0]].append((s,e,v))
 ## Calculate scaling factor and normalize
 total_reads = 0
