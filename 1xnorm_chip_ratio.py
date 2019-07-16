@@ -1,5 +1,7 @@
 import os,sys
-#python 1xnorm.py file.txt reffile.txt prefix
+#python 1xnorm.py file.txt reffile.txt prefix readlength
+
+readlength=int(sys.argv[4])
 
 file = []
 reffile = []
@@ -15,7 +17,7 @@ for files in file :
     name=files.split(".bam")[0]
     print files
     os.system("export LC_ALL=C; bedtools bamtobed -i %s | cut -f 1-3 | sort -S 1G -k1,1 -k2,2n > %s"%(files, name+".bed"))
-    os.system("bedtools intersect -a %s -b %s -c -sorted > %s"%("maize_4.33_w1000.bed", name+".bed", name+".bedgraph"))
+    os.system("bedtools intersect -a %s -b %s -c -sorted > %s"%("maize_200bp.bed", name+".bed", name+".bedgraph"))
     outfile = open(name+"_1xnorm.bedgraph", 'w')
     from collections import defaultdict 
     from operator import itemgetter
@@ -31,7 +33,7 @@ for files in file :
     total_reads = 0
     for a in open(name+".bedgraph", 'r') :
         total_reads += float(a.split("\t")[-1].strip("\n"))
-    scale = 1/(total_reads*130/2.3e9)
+    scale = 1/(total_reads*readlength/2.3e9)
     print scale
     # Process each chrom
     sChroms = sorted(genome.keys())
@@ -48,7 +50,7 @@ for files in reffile :
     name=files.split(".bam")[0]
     print files
     os.system("export LC_ALL=C; bedtools bamtobed -i %s | cut -f 1-3 | sort -S 1G -k1,1 -k2,2n > %s"%(files, name+".bed"))
-    os.system("bedtools intersect -a %s -b %s -c -sorted > %s"%("maize_4.33_w1000.bed", name+".bed", name+".bedgraph"))
+    os.system("bedtools intersect -a %s -b %s -c -sorted > %s"%("maize_200bp.bed", name+".bed", name+".bedgraph"))
     outfile = open(name+"_1xnorm.bedgraph", 'w')
     from collections import defaultdict
     from operator import itemgetter
@@ -65,10 +67,11 @@ for files in reffile :
     for a in open(name+".bedgraph", 'r') :
         total_reads += float(a.split("\t")[-1].strip("\n"))
     #print total_reads
-    scale = 1/(total_reads*130/2.3e9)
+    scale = 1/(total_reads*readlength/2.3e9)
     print scale
     # Process each chrom
     sChroms = sorted(genome.keys())
+    print sChroms ; sys.exit()
     for chrom in sChroms:
         for record in genome[chrom]:
             s, e, v = record
