@@ -29,19 +29,19 @@ package-name-version.dot.dot
  *Download test file
 
  ```sh
- files-get -S data.iplantcollaborative.org /shared/iplantcollaborative/example_data/Samtools_mpileup/ex1.bam
+ $files-get -S data.iplantcollaborative.org /shared/iplantcollaborative/example_data/Samtools_mpileup/ex1.bam
  ```
 
  *Set up $PATH using singularity images on biocontainers repository
 
  ```
- module load biocontainers
- module load samtools/ctr-1.9--h91753b0_5
+ $module load biocontainers
+ $module load samtools/ctr-1.9--h91753b0_5
  ```
 
  *Test out commands on the command line prompt
  ```
- samtools sort -o ex1_sort.bam -@ 12 ex1.bam
+ $samtools sort -o ex1_sort.bam -@ 12 ex1.bam
  ```
 
 2. Describe the application using an Agave app description (i.e. json)
@@ -161,14 +161,14 @@ echo "samtools sort -@ 12 ${ARGS} ${inputBam}"
 4. Upload the application directory to a storageSystem
 
 ```
-imkdir -p /iplant/home/jawon/applications/samtools-1.9/stampede2/
-iput -r * /iplant/home/jawon/applications/samtools-1.9/stampede2/.
+$imkdir -p /iplant/home/jawon/applications/samtools-1.9/stampede2/
+$iput -r * /iplant/home/jawon/applications/samtools-1.9/stampede2/.
 ```
 
 5. Post the app description to the Agave apps service
 
 ```
-apps-addupdate -F samsort.json
+$apps-addupdate -F samsort.json
 ```
 
 6. Debug your app by running jobs and updating the app until it works as intended
@@ -182,14 +182,27 @@ apps-addupdate -F samsort.json
     "inputBam": "agave://data.iplantcollaborative.org/shared/iplantcollaborative/example_data/Samtools_sort_BAM/sample_1.bam"
   },
   "parameters": {
-    "maxSortMemory": 500000000,
+    "maxSortMemory": 500000000
   }
 }
 ```
 
+Lastly, 
+
 ```
-jobs-submit -F job.json
+$jobs-submit -F job.json
 ```
+
+You can monitor the status of your job
+
+```
+$jobs-status $JOB-ID
+```
+
+
+
+
+
 
 
 ![Alt Text](https://gifimage.net/wp-content/uploads/2018/06/what-have-you-done-gif-1.gif)
