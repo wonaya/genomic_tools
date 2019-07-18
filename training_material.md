@@ -8,6 +8,13 @@ package-name-version.dot.dot
 |----app.json
 ```
 
+*Prerequesites 
+
+1. Completed `tacc-systems-create`
+2. Completed `clients-create`
+3. Completed `auth-tokens-create`
+4. Installed `agave CLI`
+
 *Tapisapp development proceeds via the following steps:*
 
 1. Test singularity module on the executionSystem
@@ -19,44 +26,51 @@ package-name-version.dot.dot
 
 1. Test singularity module on the executionSystem
 
-Download test file
+ *Download test file
 
-```sh
-files-get -S data.iplantcollaborative.org /shared/iplantcollaborative/example_data/Samtools_mpileup/ex1.bam
-```
+ ```sh
+ files-get -S data.iplantcollaborative.org /shared/iplantcollaborative/example_data/Samtools_mpileup/ex1.bam
+ ```
 
-```
-module load biocontainers
-module load samtools/ctr-1.9--h91753b0_5
-```
+ *Set up $PATH using singularity images on biocontainers repository
 
-```
-samtools sort -o ex1_sort.bam -@ 12 ex1.bam
-```
+ ```
+ module load biocontainers
+ module load samtools/ctr-1.9--h91753b0_5
+ ```
+
+ *Test out commands on the command line prompt
+ ```
+ samtools sort -o ex1_sort.bam -@ 12 ex1.bam
+ ```
 
 2. Describe the application using an Agave app description (i.e. json)
 
 ```
-{"name":"jawon-samtools-sort",
- "parallelism":"SERIAL",
- "version":"1.9",
- "helpURI":"http://samtools.sourceforge.net/samtools.shtml",
- "label":"",
- "shortDescription":"Sort SAM file",
- "longDescription":"Perform sort operation on a SAM file",
- "author":"Jawon Song",
- "datePublished":"07/17/2019",
- "tags":["aligner","NGS","SAM"],
- "ontology":["http://sswapmeet.sswap.info/agave/apps/Application", "http://sswapmeet.sswap.info/sequenceServices/SequenceServices"],
- "executionHost":"lonestar4.tacc.teragrid.org",
- "executionType":"HPC",
- "deploymentPath":"/iplant/home/jawon/applications/samtools-0.1.8/lonestar",
- "templatePath":"samtools-sort.sge",
- "testPath":"test-sort.sh ",
- "checkpointable":"false",
- "modules":["purge","load TACC","load iRODS"],
+{"available": true,
+ "checkpointable": false,
+ "defaultMemoryPerNode": 64,
+ "defaultProcessorsPerNode": 12,
+ "defaultMaxRunTime": "02:00:00",
+ "defaultNodeCount": 1,
+ "defaultQueue": "normal",
+ "deploymentPath":"jawon/applications/samtools-1.9/stampede2",
+ "templatePath":"test.template",
+ "testPath":"test.sh ",
+ "deploymentSystem": "data.iplantcollaborative.org",
+ "executionSystem": "tacc-stampede2-wonaya",
+ "executionType": "HPC",
+ "helpURI": "http://samtools.github.io",
+ "label": "samtools_sort",
+ "longDescription": "",
+ "name": "jawon-samsort-s2",
+ "parallelism": "SERIAL",
+ "shortDescription": "sort sam/bam file",
+ "templatePath": "test.template",
+ "testPath": "test.sh",
+ "version": "1.9",
  "inputs":[
-    {"id":"inputBam",
+ {"id":"inputBam",
      "value":
         {"default":"",
          "validator":"",
@@ -71,7 +85,7 @@ samtools sort -o ex1_sort.bam -@ 12 ex1.bam
          "maxCardinality":1,
          "fileTypes":["raw-0"]}}],
  "parameters":[
-    {"id":"outPrefix",
+    {"id":"outname",
      "value":
         {"default":"sorted",
          "type":"string",
@@ -85,7 +99,7 @@ samtools sort -o ex1_sort.bam -@ 12 ex1.bam
         {"ontology":["xs:string"]}},
     {"id":"maxSortMemory",
      "value":
-        {"default":"500000000",
+        {"default":500000000,
          "type":"number",
          "validator":"",
          "required":true,
@@ -121,3 +135,61 @@ samtools sort -o ex1_sort.bam -@ 12 ex1.bam
          "minCardinality":1,
          "fileTypes":["raw-0"]}}]}
 ```
+
+3. Create a shell template for running the app
+
+```
+#input 
+inputBam=${inputBam}
+#param
+outname=${outname}
+maxSortMemory=${maxSortMemory}
+sortByName=${sortByName}
+
+module purge
+module load TACC
+module load biocontainers
+module load samtools/ctr-1.9--h91753b0_5
+
+ARGS=""
+ARGS=" -o ${outname}  "
+
+# Run the actual program
+echo "samtools sort -@ 12 ${ARGS} ${inputBam}"
+```
+
+4. Upload the application directory to a storageSystem
+
+```
+imkdir -p /iplant/home/jawon/applications/samtools-1.9/stampede2/
+iput -r * /iplant/home/jawon/applications/samtools-1.9/stampede2/.
+```
+
+5. Post the app description to the Agave apps service
+
+```
+apps-addupdate -F samsort.json
+```
+
+6. Debug your app by running jobs and updating the app until it works as intended
+
+```
+{
+  "name": "jawon-samsort-s2 test-1563469468",
+  "appId": "jawon-samsort-s2-1.9",
+  "archive": true,
+  "inputs": {
+    "inputBam": "agave://data.iplantcollaborative.org/shared/iplantcollaborative/example_data/Samtools_sort_BAM/sample_1.bam"
+  },
+  "parameters": {
+    "maxSortMemory": 500000000,
+  }
+}
+```
+
+```
+jobs-submit -F job.json
+```
+
+
+![Alt Text](https://gifimage.net/wp-content/uploads/2018/06/what-have-you-done-gif-1.gif)
