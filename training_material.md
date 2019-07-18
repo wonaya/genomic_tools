@@ -90,7 +90,7 @@ package-name-version.dot.dot
         {"default":"sorted",
          "type":"string",
          "validator":"",
-         "required":false,
+         "required":true,
          "visible":true},
      "details":
         {"label":"Prefix for the output file",
@@ -156,6 +156,7 @@ ARGS=" -o ${outname}  "
 
 # Run the actual program
 echo "samtools sort -@ 12 ${ARGS} ${inputBam}"
+samtools sort -@ 12 ${ARGS} ${inputBam}
 ```
 
 4. Upload the application directory to a storageSystem
@@ -182,6 +183,7 @@ $apps-addupdate -F samsort.json
     "inputBam": "agave://data.iplantcollaborative.org/shared/iplantcollaborative/example_data/Samtools_sort_BAM/sample_1.bam"
   },
   "parameters": {
+    "outname":"sorted.bam",
     "maxSortMemory": 500000000
   }
 }
