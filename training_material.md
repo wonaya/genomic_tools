@@ -13,7 +13,7 @@ package-name-version.dot.dot
 1. Completed `tacc-systems-create`
 2. Completed `clients-create`
 3. Completed `auth-tokens-create`
-4. Installed `agave CLI`
+4. Installed `agave CLI` and `icommands`
 
 *Tapisapp development proceeds via the following steps:*
 
@@ -28,8 +28,8 @@ package-name-version.dot.dot
 
  *Download test file
 
- ```sh
- $files-get -S data.iplantcollaborative.org /shared/iplantcollaborative/example_data/Samtools_mpileup/ex1.bam
+ ```
+ $iget /iplant/home/shared/iplantcollaborative/example_data/Samtools_mpileup/ex1.bam
  ```
 
  *Set up $PATH using singularity images on biocontainers repository
