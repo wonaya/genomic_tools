@@ -13,6 +13,9 @@ for a in open(sys.argv[1], 'r'):
 for a in open(sys.argv[2], 'r') :
     reffile.append(a.strip("\n"))
 print "START: "+str((datetime.datetime.now()))
+
+
+"""
 print "##### RUNNING TEST FILES #####"
 readlen = []
 for files in file :
@@ -198,6 +201,7 @@ for chrom in sChroms:
         else:
             outfile.write('%s\t%i\t%i\t%.3f\n'%(chrom, s, e, oV))
 outfile.close()
+"""
 
 print "##### CALCULATING RATIO #####"
 
@@ -211,10 +215,12 @@ mergerl=merger.readlines()
 index = 0
 for a in mergel :
     outfile.write("\t".join(a.split("\t")[:3]).strip("\n")+"\t")
-    if float(mergerl[index].split("\t")[-1].strip("\n")) > 0 :
-        outfile.write(str(float(a.split("\t")[-1].strip("\n"))/float(mergerl[index].split("\t")[-1].strip("\n")))+"\n")
-    else : 
-        outfile.write("0\n")
+    if str("\t".join(a.split("\t")[:3])) == str("\t".join(mergerl[index].split("\t")[:3])) :
+        if float(mergerl[index].split("\t")[-1].strip("\n")) > 0 :
+            outfile.write(str(float(a.split("\t")[-1].strip("\n"))/float(mergerl[index].split("\t")[-1].strip("\n")))+"\n")
+        else : 
+            outfile.write("0\n")
+    else : print a, mergerl[index], "not matching"; sys.exit()
     index += 1
 outfile.close()
 ### log ratio
