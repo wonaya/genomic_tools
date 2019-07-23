@@ -201,8 +201,16 @@ You can monitor the status of your job
 $jobs-status $JOB-ID
 ```
 
+```
+singularity pull shub://patrickvdb/fastqc-singularity
 
+singularity exec /work/02114/wonaya/singularity_cache/patrickvdb-fastqc-singularity-master-latest.simg fastqc -h
 
+wget https://raw.githubusercontent.com/linsalrob/fastq-pair/master/test/left.fastq
+
+singularity exec /work/02114/wonaya/singularity_cache/patrickvdb-fastqc-singularity-master-latest.simg fastqc left.fastq
+
+```
 
 
 
