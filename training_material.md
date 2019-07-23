@@ -202,14 +202,22 @@ $jobs-status $JOB-ID
 ```
 
 ```
-singularity pull shub://patrickvdb/fastqc-singularity
 
-singularity exec /work/02114/wonaya/singularity_cache/patrickvdb-fastqc-singularity-master-latest.simg fastqc -h
+1. module load tacc-singularity
 
-wget https://raw.githubusercontent.com/linsalrob/fastq-pair/master/test/left.fastq
+2. singularity pull shub://patrickvdb/fastqc-singularity
 
-singularity exec /work/02114/wonaya/singularity_cache/patrickvdb-fastqc-singularity-master-latest.simg fastqc left.fastq
+3. wget https://raw.githubusercontent.com/linsalrob/fastq-pair/master/test/left.fastq
 
+4. singularity exec /work/02114/wonaya/singularity_cache/patrickvdb-fastqc-singularity-master-latest.simg fastqc left.fastq
+
+```
+or replace steps 1 & 2 to... 
+
+```
+1. module load tacc-singularity
+
+2. module load fastqc/ctr-0.11.8--1
 ```
 
 
