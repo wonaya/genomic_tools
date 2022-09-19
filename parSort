@@ -1,0 +1,24 @@
+#!/bin/bash
+
+TMP=t$(((RANDOM%1000)+1))
+NCORES=`grep -c ^processor /proc/cpuinfo`
+
+#split -l 5000 $1 ${TMP}
+split -l 1000000 $1 ${TMP}
+find . -name ${TMP}\* | xargs -n 1 -P $NCORES -I {} sort -S 1500M -k1,1d -k2,2n {} -o {}
+merge1(){
+	if [ -n "$2" -a -n "$1" ]
+	then
+		sort -S 1500M -k1,1d -k2,2n -m $1 $2 -o ${1}$(((RANDOM%10)+1))
+		rm $1 $2
+	fi
+}
+export -f merge1
+NTMP=`ls -1 ${TMP}* | wc -l`
+while [ $NTMP -gt 2 ]
+do
+	ls -1 ${TMP}* | xargs -n 2 -P $NCORES bash -c 'merge1 "$@"' _
+	NTMP=`ls -1 ${TMP}* | wc -l`
+done
+ls ${TMP}* | xargs -n 2 sort -S 28G -k1,1d -k2,2n -o ${1%%.bed}_sorted.bed -m
+rm ${TMP}*
