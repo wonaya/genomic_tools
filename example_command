@@ -1,3 +1,0 @@
-idev -A Springer_Vaughn -m 60 -pe 12 12 -P data
-idev -pe 12 12  -q normal -t 02:00:00
-bismark -n 1 /scratch/02114/wonaya/UMN_Bismark/ -1 temp1/23 -2 temp2/23 -p 4 --bowtie2

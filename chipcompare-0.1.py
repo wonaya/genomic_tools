@@ -33,7 +33,7 @@ def permutation(static_set, test_set, coordinate_N, permutation_cycle, unique_ou
     print "\nstart time:", datetime.datetime.now()
     perm_perc = []
     for x in range(0,int(permutation_cycle)) :
-        os.system("shuffleBed -i "+test_set+" -g "+fai+" -excl "+coordinate_N+" > tmp/"+str(x)+".bed")
+        os.system("shuffleBed -i "+test_set+" -g /work/02114/wonaya/genome/maize.genome -excl "+coordinate_N+" > tmp/"+str(x)+".bed")
         os.system("intersectBed -wa -a tmp/"+str(x)+".bed -b "+static_set+" > tmp/"+str(x).split(".")[0]+"_overlap_"+static_set.split(".")[0]+".bedGraph")
         a = open("tmp/"+str(x).split(".bed")[0]+"_overlap_"+static_set.split(".")[0]+".bedGraph", 'r')
         alines = a.readlines()

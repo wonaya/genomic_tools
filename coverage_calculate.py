@@ -15,7 +15,7 @@ a = flagstat.readlines()
 mapped_reads = a[2].split(" + ")[0]
 if sys.argv[3] == "-P" :
     total_base = int(mapped_reads)*2*int(sys.argv[4])
-elif sys.argv[3] == "-S" :
+else :
     total_base = int(mapped_reads)*int(sys.argv[4])
 coverage = float(total_base)/float(genome_size)
 
